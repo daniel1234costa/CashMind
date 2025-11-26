@@ -2,7 +2,7 @@ package controller;
 
 import model.Usuario;
 import model.UsuarioDAO;
-import org.mindrot.jbcrypt.BCrypt; 
+import org.mindrot.jbcrypt.BCrypt;
 import java.util.Date;
 import java.util.UUID; 
 import java.util.List; 
