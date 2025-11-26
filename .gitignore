@@ -1,4 +1,12 @@
 ##############################
+## BANCO DE DADOS (CRÍTICO)
+##############################
+# Ignora o banco de dados SQLite (Arquivo local, não deve ser compartilhado no Git)
+/database/financas.db 
+# Ignora possíveis arquivos de logs de transação do SQLite
+*.db-journal
+
+##############################
 ## Java
 ##############################
 .mtj.tmp/
