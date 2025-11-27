@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS Usuario (
 
 CREATE TABLE IF NOT EXISTS Categoria (
     idCategoria VARCHAR(255) PRIMARY KEY,
-    nomeCategoria VARCHAR(255) NOT NULL
+    nomeCategoria VARCHAR(255) NOT NULL,
+    status BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 
