@@ -11,13 +11,9 @@ import java.sql.Types; // Import necessário para java.sql.Types
 
 public class UsuarioController {
     
-    // ATENÇÃO: O DAO deve ser estático para ser acessado por métodos estáticos.
+   
     private static final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-    
-    /**
-     * Registra um novo usuário. MÉTODO AGORA ESTÁTICO.
-     */
     public static boolean registrarUsuario(String nome, String email, String senhaPura, Date dataNascimento) {
         
         String senhaHash = BCrypt.hashpw(senhaPura, BCrypt.gensalt());
@@ -117,7 +113,6 @@ public boolean atualizarUsuario(Usuario usuario) {
     public static void excluirUsuario() {
         System.out.println("Excluir Usuário - Iniciando processo...");
         
-        // Mantido o Scanner local para interação estática
         Scanner scanner = new Scanner(System.in); 
         
         System.out.print("Digite o email do usuário a ser excluído: ");

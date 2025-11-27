@@ -105,7 +105,7 @@ public class UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            // Loga o erro, mas não lança (o Controller lidará com o resultado booleano, se houver)
+           
             System.err.println("Erro ao executar exclusão no banco de dados: " + e.getMessage());
         }
     }

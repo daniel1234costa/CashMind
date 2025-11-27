@@ -1,9 +1,9 @@
 package app;
 
 import java.util.Scanner;
-import views.TelaRenda;
 import views.TelaCategoria;
-// import views.TelaUsuario; // (Descomente quando tiver a tela de usuário pronta)
+import views.TelaRenda;
+import views.TelaUsuario; // (Descomente quando tiver a tela de usuário pronta)
 // import views.TelaDespesa; // (Descomente quando tiver a tela de despesa pronta)
 
 public class Main {
@@ -15,10 +15,10 @@ public class Main {
             System.out.println("\n==========================================");
             System.out.println("      SISTEMA DE FINANÇAS PESSOAIS");
             System.out.println("==========================================");
-            System.out.println("1. Módulo de Rendas 💰");
-            System.out.println("2. Módulo de Despesas 💸 (Em breve)");
-            System.out.println("3. Módulo de Usuários 👤 (Em breve)");
-            System.out.println("4. Módulo de Categorias 🗂️");
+            System.out.println("1. Módulo de Rendas ");
+            System.out.println("2. Módulo de Despesas  (Em breve)");
+            System.out.println("3. Módulo de Usuários ");
+            System.out.println("4. Módulo de Categorias ");
             System.out.println("0. Sair do Sistema");
             System.out.println("==========================================");
             System.out.print("Escolha uma opção: ");
@@ -28,7 +28,7 @@ public class Main {
                 opcao = scanner.nextInt();
                 scanner.nextLine(); // Limpar o 'enter' do buffer
             } catch (Exception e) {
-                System.out.println("❌ Por favor, digite apenas números!");
+                System.out.println("Por favor, digite apenas números!");
                 scanner.nextLine(); // Limpa a sujeira do scanner
                 continue; // Volta pro começo do loop
             }
@@ -53,8 +53,8 @@ public class Main {
 
                 case 3:
                     System.out.println("⚠️  O módulo de Usuários ainda está em construção!");
-                    // TelaUsuario telaUser = new TelaUsuario();
-                    // telaUser.exibirMenu();
+                    TelaUsuario telaUser = new TelaUsuario();
+                    telaUser.exibirMenu();
                     break;
                 
                 case 4:
