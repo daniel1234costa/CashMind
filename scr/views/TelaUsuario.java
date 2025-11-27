@@ -26,7 +26,7 @@ public class TelaUsuario {
                 System.out.println("0. Sair");
             } else {
                 System.out.println("Bem-vindo(a), " + usuarioLogado.getNome());
-                System.out.println("3. Listar Todos os Usuários (Admin - Em Breve)");
+                System.out.println("3. Visualizar Meu Perfil");
                 System.out.println("4. Editar Perfil");
                 System.out.println("5. Excluir Minha Conta");
                 System.out.println("6. Logout");

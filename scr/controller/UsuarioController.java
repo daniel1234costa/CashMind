@@ -97,7 +97,7 @@ public boolean atualizarUsuario(Usuario usuario) {
             return false;
         }
 
-        System.out.println("-> Tentando atualizar perfil do usuário: " + usuario.getNome());
+        System.out.println("Tentando atualizar perfil do usuário: " + usuario.getNome());
         
         boolean sucesso = this.atualizarUsuario(usuario);
 

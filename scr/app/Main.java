@@ -3,14 +3,13 @@ package app;
 import java.util.Scanner;
 import views.TelaCategoria;
 import views.TelaRenda;
-import views.TelaUsuario; // (Descomente quando tiver a tela de usuário pronta)
-// import views.TelaDespesa; // (Descomente quando tiver a tela de despesa pronta)
+import views.TelaUsuario;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
-        // Loop infinito para o menu principal só fechar quando escolher Sair
+      
         while (true) {
             System.out.println("\n==========================================");
             System.out.println("      SISTEMA DE FINANÇAS PESSOAIS");
@@ -34,25 +33,23 @@ public class Main {
             }
 
             if (opcao == 0) {
-                System.out.println("Saindo... Até logo! 👋");
+                System.out.println("Saindo... Até logo!");
                 break;
             }
 
             switch (opcao) {
                 case 1:
-                    // AQUI É O PULO DO GATO:
-                    // O Main chama a Tela da Renda e passa o controle para ela.
+                   
                     TelaRenda telaRenda = new TelaRenda();
                     telaRenda.exibirMenu(); 
-                    // Quando o usuário sair do menu da renda, o código volta pra cá
+                   
                     break;
                 
                 case 2:
-                    System.out.println("⚠️  O módulo de Despesas ainda está em construção!");
+                    System.out.println("O módulo de Despesas ainda está em construção!");
                     break;
 
                 case 3:
-                    System.out.println("⚠️  O módulo de Usuários ainda está em construção!");
                     TelaUsuario telaUser = new TelaUsuario();
                     telaUser.exibirMenu();
                     break;
@@ -63,7 +60,7 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("❌ Opção inválida!");
+                    System.out.println(" Opção inválida!");
             }
         }
         
