@@ -1,11 +1,13 @@
-package model;
-
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID; // Para gerar o ID VARCHAR
+import java.util.UUID; 
+import model.Usuario; // IMPORTADO DO MODEL
+import model.DatabaseConnector; // IMPORTADO DO MODEL
+import model.UtilData; // IMPORTADO DO MODEL
 
 public class UsuarioDAO {
 
@@ -77,7 +79,7 @@ public class UsuarioDAO {
         } catch (SQLException e) {
             System.err.println("Erro ao buscar usuário por email: " + e.getMessage());
         } finally {
-           DatabaseConnector.fecharConexao(conn);
+            DatabaseConnector.fecharConexao(conn);
             // Fechamento seguro dos recursos
             if (rs != null) { try { rs.close(); } catch (SQLException e) {} }
             if (stmt != null) { try { stmt.close(); } catch (SQLException e) {} }
@@ -85,7 +87,7 @@ public class UsuarioDAO {
         return usuario;
     }
     
-   public void excluir(String idUsuario) {
+    public void excluir(String idUsuario) {
         // SQL para deletar um usuário pelo seu ID único
         String sql = "DELETE FROM Usuario WHERE id_usuario = ?";
 
@@ -105,7 +107,7 @@ public class UsuarioDAO {
             }
 
         } catch (SQLException e) {
-           
+            
             System.err.println("Erro ao executar exclusão no banco de dados: " + e.getMessage());
         }
     }

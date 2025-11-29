@@ -1,7 +1,7 @@
 package views;
 
-import controller.UsuarioController;
 import model.Usuario;
+// import controller.UsuarioController; // REMOVIDO
 import java.util.Scanner;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -9,8 +9,7 @@ import java.text.ParseException;
 
 public class TelaUsuario {
 
-    // Controller instanciada para uso geral
-    private final UsuarioController controller = new UsuarioController();
+    // REMOVIDO: A instância do UsuarioController foi removida
     private final Scanner scanner = new Scanner(System.in);
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -56,10 +55,11 @@ public class TelaUsuario {
                             usuarioLogado = realizarLogin();
                         }
                         break;
-                    case 3: // Listar
+                    case 3: // Visualizar
                         if (usuarioLogado != null) {
-                         controller.visualizarUsuario(usuarioLogado);
-    }
+                         
+                            Usuario.visualizarUsuario(usuarioLogado);
+                        }
                         break;
                     case 4: // Editar
                         if (usuarioLogado != null) {
@@ -69,7 +69,7 @@ public class TelaUsuario {
                     case 5: // Excluir
                         if (usuarioLogado != null) {
                             if (excluirConta(usuarioLogado)) {
-                                usuarioLogado = null; // Logout forçado após excluir
+                                usuarioLogado = null;
                             }
                         }
                         break;
@@ -92,7 +92,7 @@ public class TelaUsuario {
         }
     }
 
-    // --- Métodos Auxiliares para limpar o código ---
+   
 
     private void cadastrarUsuario() {
         System.out.print("Nome: ");
@@ -106,7 +106,9 @@ public class TelaUsuario {
 
         try {
             Date dataNascimento = dateFormat.parse(dataStr);
-            boolean sucesso = controller.registrarUsuario(nome, email, senha, dataNascimento);
+            
+        
+            boolean sucesso = Usuario.registrarUsuario(nome, email, senha, dataNascimento);
             
             if (sucesso) System.out.println(" Usuário registrado com sucesso!");
             else System.err.println(" Falha ao registrar. Email pode já existir.");
@@ -121,7 +123,9 @@ public class TelaUsuario {
         String email = scanner.nextLine();
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
-        return controller.login(email, senha);
+        
+        // CORRIGIDO: Chamando model.Usuario.login
+        return Usuario.login(email, senha);
     }
 
     private void editarPerfil(Usuario usuarioLogado) {
@@ -149,7 +153,8 @@ public class TelaUsuario {
                 usuarioAtualizado.setDataNascimento(dateFormat.parse(novaDataStr));
             }
 
-            if (controller.editarUsuario(usuarioAtualizado)) {
+            // CORRIGIDO: Chamando model.Usuario.editarUsuario
+            if (Usuario.editarUsuario(usuarioAtualizado)) {
                 // Atualiza a sessão local
                 usuarioLogado.setNome(usuarioAtualizado.getNome());
                 usuarioLogado.setEmail(usuarioAtualizado.getEmail());
@@ -160,11 +165,12 @@ public class TelaUsuario {
         }
     }
 
-        private boolean excluirConta(Usuario usuarioLogado) {
+    private boolean excluirConta(Usuario usuarioLogado) {
         System.out.print("Deseja realmente EXCLUIR sua conta? Digite 'SIM': ");
         if (scanner.nextLine().equalsIgnoreCase("SIM")) {
 
-            controller.excluirUsuario(usuarioLogado.getEmail()); 
+            // CORRIGIDO: Chamando model.Usuario.excluirUsuario
+            Usuario.excluirUsuario(usuarioLogado.getEmail()); 
             return true;
         }
         return false;

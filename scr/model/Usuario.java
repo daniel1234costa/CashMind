@@ -2,8 +2,10 @@ package model;
 
 import java.util.Date;
 import java.util.UUID;
-import model.UsuarioDAO;
 import org.mindrot.jbcrypt.BCrypt;
+import dao.UsuarioDAO; // IMPORTADO DO NOVO PACOTE DAO
+import model.UtilData; // Assumindo que UtilData está em model
+import model.DatabaseConnector; // Necessário se for usado diretamente
 
 public class Usuario {
 
@@ -65,17 +67,19 @@ public class Usuario {
         final UsuarioDAO usuarioDAO = new UsuarioDAO();
         String sql = "UPDATE Usuario SET nome = ?, email = ?, data_nascimento = ? WHERE id_usuario = ?";
 
-        try (java.sql.Connection conn = model.DatabaseConnector.conectar(); java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
+        // ⚡️ CORREÇÃO DE ACESSO AO CONECTOR: Não precisa do prefixo 'model.' pois ambos estão em 'model'.
+        try (java.sql.Connection conn = DatabaseConnector.conectar(); 
+             java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getEmail());
 
-          if (usuario.getDataNascimento() != null) {
+            if (usuario.getDataNascimento() != null) {
                 
                 String dataFormatada = UtilData.formatarData(usuario.getDataNascimento());
                 stmt.setString(3, dataFormatada); 
             } else {
-               
+                
                 stmt.setString(3, null); 
             }
 
@@ -130,7 +134,6 @@ public class Usuario {
 
         System.out.println("=======================\n");
     }
-
 
 
     public static void excluirUsuario(String email) {
