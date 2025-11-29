@@ -58,8 +58,8 @@ public class TelaUsuario {
                         break;
                     case 3: // Listar
                         if (usuarioLogado != null) {
-                            System.out.println("Funcionalidade em desenvolvimento.");
-                        }
+                         controller.visualizarUsuario(usuarioLogado);
+    }
                         break;
                     case 4: // Editar
                         if (usuarioLogado != null) {

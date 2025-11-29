@@ -35,4 +35,9 @@ public class UsuarioController {
         Usuario.excluirUsuario(email);
     }
 
+    public void visualizarUsuario(Usuario usuario) {
+   
+    Usuario.visualizarUsuario(usuario);
+}
+
 }

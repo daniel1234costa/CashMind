@@ -70,14 +70,13 @@ public class Usuario {
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getEmail());
 
-            if (usuario.getDataNascimento() != null) {
-
-                java.sql.Date sqlDate = new java.sql.Date(usuario.getDataNascimento().getTime());
-
-                stmt.setDate(3, sqlDate);
+          if (usuario.getDataNascimento() != null) {
+                
+                String dataFormatada = UtilData.formatarData(usuario.getDataNascimento());
+                stmt.setString(3, dataFormatada); 
             } else {
-
-                stmt.setNull(3, java.sql.Types.DATE);
+               
+                stmt.setString(3, null); 
             }
 
             stmt.setString(4, usuario.getIdUsuario());
@@ -109,6 +108,30 @@ public class Usuario {
         }
         return sucesso;
     }
+        // Em model.Usuario.java
+
+    public static void visualizarUsuario(Usuario usuario) { 
+        if (usuario == null) {
+            System.out.println("Erro: Usuário não informado para visualização.");
+            return;
+        }
+
+        System.out.println("\n===== SEU PERFIL =====");
+        System.out.println("ID: " + usuario.getIdUsuario());
+        System.out.println("Nome: " + usuario.getNome());
+        System.out.println("Email: " + usuario.getEmail());
+
+        if (usuario.getDataNascimento() != null) {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+            System.out.println("Data de Nascimento: " + sdf.format(usuario.getDataNascimento()));
+        } else {
+            System.out.println("Data de Nascimento: Não informada");
+        }
+
+        System.out.println("=======================\n");
+    }
+
+
 
     public static void excluirUsuario(String email) {
         final UsuarioDAO usuarioDAO = new UsuarioDAO();
