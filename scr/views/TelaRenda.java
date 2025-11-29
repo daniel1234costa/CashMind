@@ -15,15 +15,15 @@ public class TelaRenda {
     public void exibirMenu() {
         while (true) {
             System.out.println("\n=== GESTÃO DE RENDAS ===");
-            System.out.println("1. Cadastrar Renda");
-            System.out.println("2. Listar Rendas Extras");
-            System.out.println("3. Listar Rendas Fixas");
-            System.out.println("4. Editar Renda");
-            System.out.println("5. Excluir Renda");
-            System.out.println("6. Visualizar Detalhes");
+            System.out.println("1. Cadastrar");
+            System.out.println("2. Listar Extras");
+            System.out.println("3. Listar Fixas");
+            System.out.println("4. Editar");
+            System.out.println("5. Excluir");
+            System.out.println("6. Visualizar");
             System.out.println("7. Total Mensal");
             System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
+            System.out.print("Opção: ");
 
             int opcao = scanner.nextInt();
             scanner.nextLine(); 
@@ -38,7 +38,7 @@ public class TelaRenda {
                 case 5: excluir(); break;
                 case 6: visualizar(); break;
                 case 7: totalMensal(); break;
-                default: System.out.println("Opção inválida!");
+                default: System.out.println("Inválido!");
             }
         }
     }
@@ -47,17 +47,11 @@ public class TelaRenda {
         System.out.println("\n--- NOVA RENDA ---");
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
-
         System.out.print("Valor: ");
         double valor = scanner.nextDouble();
         scanner.nextLine();
-
-        System.out.print("Data (yyyy-MM-dd): ");
-        String dataTexto = scanner.nextLine();
-        
-        // Converte o texto digitado para Date para passar pro Controller
-        Date data = UtilData.parseData(dataTexto); 
-
+        System.out.print("Data (dd/MM/yyyy): ");
+        Date data = UtilData.parseData(scanner.nextLine()); 
         System.out.print("É fixa? (true/false): ");
         boolean tipo = scanner.nextBoolean();
 
@@ -65,70 +59,44 @@ public class TelaRenda {
     }
 
     private void listarExtras() {
-        System.out.println("\n--- RENDAS EXTRAS ---");
-        List<Renda> lista = controller.listarRendasExtras();
-        
-        if (lista.isEmpty()) {
-            System.out.println("Nenhuma renda extra encontrada.");
-        } else {
-            for (Renda r : lista) {
-                System.out.println("ID: " + r.getIdRenda() + " | " + r.getNomeRenda() + " | R$ " + r.getValor());
-            }
-        }
+        System.out.println("\n--- EXTRAS ---");
+        List<Renda> lista = controller.listarExtras();
+        for (Renda r : lista) System.out.println(r.getIdRenda() + " | " + r.getNomeRenda() + " | R$ " + r.getValor());
     }
 
     private void listarFixas() {
-        System.out.println("\n--- RENDAS FIXAS ---");
-        List<Renda> lista = controller.listarRendasFixas();
-        
-        if (lista.isEmpty()) {
-            System.out.println("Nenhuma renda fixa encontrada.");
-        } else {
-            for (Renda r : lista) {
-                System.out.println("ID: " + r.getIdRenda() + " | " + r.getNomeRenda() + " | R$ " + r.getValor());
-            }
-        }
+        System.out.println("\n--- FIXAS ---");
+        List<Renda> lista = controller.listarFixas();
+        for (Renda r : lista) System.out.println(r.getIdRenda() + " | " + r.getNomeRenda() + " | R$ " + r.getValor());
     }
 
     private void editar() {
-        System.out.println("\n--- EDITAR RENDA ---");
-        System.out.print("ID da renda: ");
+        System.out.print("ID: ");
         String id = scanner.next();
         scanner.nextLine(); 
-
         System.out.print("Novo Nome: ");
         String nome = scanner.nextLine();
-
         System.out.print("Novo Valor: ");
         double valor = scanner.nextDouble();
-
         controller.editarRenda(id, nome, valor);
     }
 
     private void excluir() {
-        System.out.println("\n--- EXCLUIR RENDA ---");
-        System.out.print("ID da renda: ");
+        System.out.print("Informe o id da renda que deseja excluir: ");
         String id = scanner.next();
-        
         controller.excluirRenda(id);
     }
 
     private void visualizar() {
-        System.out.println("\n--- DETALHES ---");
-        System.out.print("ID da renda: ");
-        String id = scanner.next();
-        
-        controller.visualizarRenda(id);
+        System.out.print("ID: ");
+        controller.visualizarRenda(scanner.next());
     }
 
     private void totalMensal() {
-        System.out.println("\n--- TOTAL MENSAL ---");
-        System.out.print("Mês (1-12): ");
+        System.out.print("Mês: ");
         int mes = scanner.nextInt();
-        System.out.print("Ano (yyyy): ");
+        System.out.print("Ano: ");
         int ano = scanner.nextInt();
-
-        double total = controller.calcularRendaTotalMensal(mes, ano);
-        System.out.println("Total em " + mes + "/" + ano + ": R$ " + total);
+        System.out.println("Total: R$ " + controller.totalMensal(mes, ano));
     }
 }
