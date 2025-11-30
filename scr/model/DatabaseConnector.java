@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class DatabaseConnector {
 
-    // CAMINHO: Na raiz do projeto (mais seguro)
+    // CAMINHO: Na raiz do projeto
     private static final String URL = "jdbc:sqlite:database/financas.db"; 
     
     static {
@@ -28,7 +28,7 @@ public class DatabaseConnector {
                 stmt.execute("PRAGMA foreign_keys = ON;");
             }
 
-            // 2. MÁGICA AQUI: Chama a criação das tabelas toda vez que conecta
+            // 2. Cria as tabelas se não existirem
             criarTabelas(conexao);
 
         } catch (SQLException e) {
@@ -40,43 +40,47 @@ public class DatabaseConnector {
     private static void criarTabelas(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
             
-            // USUARIO
+            // --- USUARIO ---
+            // MUDANÇA: id_usuario agora é TEXT PRIMARY KEY (sem AutoIncrement) para aceitar UUID
             stmt.execute("CREATE TABLE IF NOT EXISTS Usuario ("
-                    + "id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "id_usuario TEXT PRIMARY KEY, " 
                     + "nome VARCHAR(255), "
                     + "email VARCHAR(255) UNIQUE, "
                     + "senha VARCHAR(255), "
-                    + "data_nascimento DATE)");
+                    + "data_nascimento TEXT)"); // Alterado para TEXT para evitar problemas de data
 
-            // CATEGORIA
+            // --- CATEGORIA ---
             stmt.execute("CREATE TABLE IF NOT EXISTS Categoria ("
-                    + "idCategoria INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "idCategoria TEXT PRIMARY KEY, " // Melhor usar TEXT se for gerar UUID também
+                    + "idUsuario TEXT, "               // FK deve ser TEXT para bater com Usuario
                     + "nomeCategoria VARCHAR(255), "
-                    + "status BOOLEAN)");
+                    + "status BOOLEAN, "
+                    + "FOREIGN KEY (idUsuario) REFERENCES Usuario(id_usuario))");
 
-            // RENDA (Tabela corrigida para o seu código Java)
+            // --- RENDA ---
             stmt.execute("CREATE TABLE IF NOT EXISTS Renda ("
                     + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "nome VARCHAR(255) NOT NULL, "
                     + "valor NUMERIC(10, 2) NOT NULL, "
                     + "data TEXT NOT NULL, "
                     + "tipo BOOLEAN, "
-                    + "id_usuario INTEGER NOT NULL, " // Link obrigatório
+                    + "id_usuario TEXT NOT NULL, " // FK alterada para TEXT
                     + "FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE)");
 
-            // DESPESA
+            // --- DESPESA ---
             stmt.execute("CREATE TABLE IF NOT EXISTS Despesa ("
-                    + "idDespesa INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "idDespesa TEXT PRIMARY KEY, " // Sugiro TEXT para padronizar UUID
                     + "nomeDespesa VARCHAR(255), "
                     + "valor NUMERIC(10, 2), "
                     + "data TEXT, "
-                    + "idUsuario INTEGER, "
-                    + "idCategoria INTEGER, "
+                    + "idUsuario TEXT, " // FK alterada para TEXT
+                    + "idCategoria TEXT, "
                     + "FOREIGN KEY (idUsuario) REFERENCES Usuario(id_usuario), "
                     + "FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria))");
 
-            // --- CRIA USUÁRIO DE TESTE (ID 1) PARA NÃO TRAVAR A RENDA ---
-            stmt.execute("INSERT OR IGNORE INTO Usuario (id_usuario, nome, email, senha) VALUES (1, 'Admin', 'admin', '123')");
+            // --- CRIA USUÁRIO DE TESTE (Adapte se necessário) ---
+            // Como agora é TEXT, o '1' será salvo como string "1"
+            stmt.execute("INSERT OR IGNORE INTO Usuario (id_usuario, nome, email, senha) VALUES ('1', 'Admin', 'admin', '123')");
 
         } catch (SQLException e) {
             System.err.println("Erro tabelas: " + e.getMessage());
