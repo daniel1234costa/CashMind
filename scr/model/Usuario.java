@@ -3,7 +3,7 @@ package model;
 import java.util.Date;
 import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
-import dao.UsuarioDAO; // IMPORTADO DO NOVO PACOTE DAO
+import dao.UsuarioDAO; 
 
 public class Usuario {
 
@@ -65,7 +65,7 @@ public class Usuario {
         final UsuarioDAO usuarioDAO = new UsuarioDAO();
         String sql = "UPDATE Usuario SET nome = ?, email = ?, data_nascimento = ? WHERE id_usuario = ?";
 
-        // ⚡️ CORREÇÃO DE ACESSO AO CONECTOR: Não precisa do prefixo 'model.' pois ambos estão em 'model'.
+    
         try (java.sql.Connection conn = DatabaseConnector.conectar(); 
              java.sql.PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -110,7 +110,7 @@ public class Usuario {
         }
         return sucesso;
     }
-        // Em model.Usuario.java
+     
 
     public static void visualizarUsuario(Usuario usuario) { 
         if (usuario == null) {
