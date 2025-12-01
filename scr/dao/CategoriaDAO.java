@@ -3,153 +3,112 @@ package dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 import model.Categoria;
 import model.DatabaseConnector;
 
 public class CategoriaDAO {
 
-    // ✅ Cadastrar categoria
-    public void cadastrarCategoria(String nomeCategoria) {
-        String sql = "INSERT INTO Categoria (idCategoria, nomeCategoria, status) VALUES (?, ?, TRUE)";
+    public void cadastrarCategoria(Categoria categoria) {
+        String sql = "INSERT INTO Categoria (idCategoria, nomeCategoria, status) VALUES (?, ?, 1)";
 
         try (Connection conn = DatabaseConnector.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            String id = java.util.UUID.randomUUID().toString();
+            // Gera UUID se não tiver
+            if (categoria.getIdCategoria() == null) {
+                categoria.setIdCategoria(UUID.randomUUID().toString());
+            }
 
-            stmt.setString(1, id);
-            stmt.setString(2, nomeCategoria);
+            stmt.setString(1, categoria.getIdCategoria());
+            stmt.setString(2, categoria.getNomeCategoria());
+            
             stmt.execute();
-
-            System.out.println("Categoria cadastrada com sucesso!");
+            System.out.println("✅ Categoria cadastrada!");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar categoria: " + e.getMessage());
+            System.out.println("Erro ao cadastrar: " + e.getMessage());
         }
     }
 
-    // ✅ Editar categoria
     public void editarCategoria(String id, String novoNome) {
         String sql = "UPDATE Categoria SET nomeCategoria = ? WHERE idCategoria = ?";
-
         try (Connection conn = DatabaseConnector.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, novoNome);
             stmt.setString(2, id);
 
-            int linhas = stmt.executeUpdate();
-
-            if (linhas > 0) {
-                System.out.println("Categoria atualizada com sucesso!");
-            } else {
-                System.out.println("Nenhuma categoria encontrada com esse ID.");
-            }
+            if (stmt.executeUpdate() > 0) System.out.println("✅ Categoria atualizada!");
+            else System.out.println("⚠️ ID não encontrado.");
 
         } catch (SQLException e) {
-            System.out.println("Erro ao editar categoria: " + e.getMessage());
+            System.out.println("Erro ao editar: " + e.getMessage());
         }
     }
 
-    // ✅ Desativar categoria (status = FALSE)
-    public void desativarCategoria(String id) {
-        String sql = "UPDATE Categoria SET status = FALSE WHERE idCategoria = ?";
-
+    public boolean desativarCategoria(String id) {
+        String sql = "UPDATE Categoria SET status = 0 WHERE idCategoria = ?";
         try (Connection conn = DatabaseConnector.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, id);
-
-            int linhas = stmt.executeUpdate();
-
-            if (linhas > 0) {
-                System.out.println("Categoria desativada com sucesso!");
-            } else {
-                System.out.println("Nenhuma categoria encontrada com esse ID.");
-            }
+            return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.out.println("Erro ao desativar categoria: " + e.getMessage());
+            System.out.println("Erro ao desativar: " + e.getMessage());
+            return false;
         }
     }
 
-    // ✅ Visualizar categoria
-    public void visualizarCategoria(String id) {
-        String sql = "SELECT * FROM Categoria WHERE idCategoria = ?";
-
-        try (Connection conn = DatabaseConnector.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                System.out.println("\n--- DETALHES DA CATEGORIA ---");
-                System.out.println("ID: " + rs.getString("idCategoria"));
-                System.out.println("Nome: " + rs.getString("nomeCategoria"));
-                System.out.println("Status: " + (rs.getBoolean("status") ? "Ativa" : "Desativada"));
-            } else {
-                System.out.println("Nenhuma categoria encontrada com esse ID.");
-            }
-
-            rs.close();
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao visualizar categoria: " + e.getMessage());
-        }
-    }
-
-    // ✅ Listar todas as categorias
     public List<Categoria> listarCategorias() {
-        List<Categoria> categorias = new ArrayList<>();
+        List<Categoria> lista = new ArrayList<>();
         String sql = "SELECT * FROM Categoria";
-
         try (Connection conn = DatabaseConnector.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Categoria c = new Categoria(
-                    rs.getString("idCategoria"),
-                    rs.getString("nomeCategoria"),
-                    rs.getBoolean("status")
-                );
-                categorias.add(c);
+                Categoria c = new Categoria();
+                c.setIdCategoria(rs.getString("idCategoria"));
+                c.setNomeCategoria(rs.getString("nomeCategoria"));
+                c.setStatus(rs.getBoolean("status"));
+                lista.add(c);
             }
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao listar categorias: " + e.getMessage());
-        }
-
-        return categorias;
+        } catch (SQLException e) { System.out.println("Erro listar: " + e.getMessage()); }
+        return lista;
     }
 
-    // ✅ Buscar categoria por ID
-    public Categoria buscarCategoria(String id) {
-        String sql = "SELECT * FROM Categoria WHERE idCategoria = ?";
-        Categoria categoria = null;
-
+    public Categoria buscarCategoria(String nomeOrId) {
+        // Busca por ID ou Nome (LIKE)
+        String sql = "SELECT * FROM Categoria WHERE idCategoria = ? OR nomeCategoria LIKE ?";
         try (Connection conn = DatabaseConnector.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, id);
+            
+            stmt.setString(1, nomeOrId);
+            stmt.setString(2, "%" + nomeOrId + "%");
+            
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
-                categoria = new Categoria(
-                    rs.getString("idCategoria"),
-                    rs.getString("nomeCategoria"),
-                    rs.getBoolean("status")
-                );
+                Categoria c = new Categoria();
+                c.setIdCategoria(rs.getString("idCategoria"));
+                c.setNomeCategoria(rs.getString("nomeCategoria"));
+                c.setStatus(rs.getBoolean("status"));
+                return c;
             }
-
-            rs.close();
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao buscar categoria: " + e.getMessage());
+        } catch (SQLException e) { System.out.println("Erro buscar: " + e.getMessage()); }
+        return null;
+    }
+    
+    public void visualizarCategoria(String id) {
+        Categoria c = buscarCategoria(id);
+        if (c != null) {
+            System.out.println("--- CATEGORIA ---");
+            System.out.println("ID: " + c.getIdCategoria());
+            System.out.println("Nome: " + c.getNomeCategoria());
+            System.out.println("Status: " + (c.isStatus() ? "Ativa" : "Inativa"));
+        } else {
+            System.out.println("Categoria não encontrada.");
         }
-
-        return categoria;
     }
 }

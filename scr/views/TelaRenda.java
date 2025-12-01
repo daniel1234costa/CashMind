@@ -3,13 +3,11 @@ package views;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import controller.RendaController;
 import model.Renda;
 import model.UtilData;
 
 public class TelaRenda {
 
-    private RendaController controller = new RendaController();
     private Scanner scanner = new Scanner(System.in);
 
     public void exibirMenu() {
@@ -47,11 +45,9 @@ public class TelaRenda {
         System.out.println("\n--- NOVA RENDA ---");
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
-
         System.out.print("Valor: ");
         double valor = scanner.nextDouble();
         
-        // Pedindo separado para evitar erro de digitação
         System.out.print("Dia: ");
         int dia = scanner.nextInt();
         System.out.print("Mês: ");
@@ -59,27 +55,28 @@ public class TelaRenda {
         System.out.print("Ano: ");
         int ano = scanner.nextInt();
         
-        // Monta a String "dd/MM/yyyy" para o UtilData converter
-       // Monta no formato Ano-Mês-Dia para o UtilData aceitar
         String dataTexto = String.format("%d-%02d-%02d", ano, mes, dia);
         Date data = UtilData.parseData(dataTexto);
 
         System.out.print("É fixa? (true/false): ");
         boolean tipo = scanner.nextBoolean();
-        scanner.nextLine(); // Limpar buffer
+        scanner.nextLine();
 
-        controller.cadastrarRenda(nome, valor, data, tipo);
+        // CHAMA DIRETO O MODEL (Static)
+        Renda.cadastrarRenda(nome, valor, data, tipo);
     }
 
     private void listarExtras() {
         System.out.println("\n--- EXTRAS ---");
-        List<Renda> lista = controller.listarExtras();
+        // CHAMA DIRETO O MODEL
+        List<Renda> lista = Renda.listarRendasExtras();
         for (Renda r : lista) System.out.println(r.getIdRenda() + " | " + r.getNomeRenda() + " | R$ " + r.getValor());
     }
 
     private void listarFixas() {
         System.out.println("\n--- FIXAS ---");
-        List<Renda> lista = controller.listarFixas();
+        // CHAMA DIRETO O MODEL
+        List<Renda> lista = Renda.listarRendasFixas();
         for (Renda r : lista) System.out.println(r.getIdRenda() + " | " + r.getNomeRenda() + " | R$ " + r.getValor());
     }
 
@@ -91,18 +88,29 @@ public class TelaRenda {
         String nome = scanner.nextLine();
         System.out.print("Novo Valor: ");
         double valor = scanner.nextDouble();
-        controller.editarRenda(id, nome, valor);
+        
+        // Cria objeto temporário e chama método de instância do Model
+        Renda r = new Renda();
+        r.setIdRenda(id);
+        r.editarRenda(nome, valor);
     }
 
     private void excluir() {
-        System.out.print("Informe o id da renda que deseja excluir: ");
+        System.out.print("ID para excluir: ");
         String id = scanner.next();
-        controller.excluirRenda(id);
+        
+        // Excluir é estático no Model (conforme diagrama) e recebe ID
+        Renda.excluirRenda(id);
     }
 
     private void visualizar() {
         System.out.print("ID: ");
-        controller.visualizarRenda(scanner.next());
+        String id = scanner.next();
+        
+        // Visualizar é instância no Model
+        Renda r = new Renda();
+        r.setIdRenda(id);
+        r.visualizarRenda();
     }
 
     private void totalMensal() {
@@ -110,6 +118,7 @@ public class TelaRenda {
         int mes = scanner.nextInt();
         System.out.print("Ano: ");
         int ano = scanner.nextInt();
-        System.out.println("Total: R$ " + controller.totalMensal(mes, ano));
+        // CHAMA DIRETO O MODEL
+        System.out.println("Total: R$ " + Renda.calcularRendaTotalMensal(mes, ano));
     }
 }

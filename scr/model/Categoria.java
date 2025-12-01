@@ -1,7 +1,6 @@
 package model;
 
 import java.util.List;
-
 import dao.CategoriaDAO;
 
 public class Categoria {
@@ -11,55 +10,50 @@ public class Categoria {
 
     public Categoria() {}
 
-    public Categoria(String idCategoria, String nomeCategoria, boolean status) {
-        this.idCategoria = idCategoria;
+    public Categoria(String nomeCategoria, boolean status) {
         this.nomeCategoria = nomeCategoria;
         this.status = status;
     }
 
-    // --- MÉTODOS ESTÁTICOS (Model chama DAO) ---
+    // --- MÉTODOS ESTÁTICOS ---
 
-    public static void cadastrarCategoria(String nomeCategoria) {
-        if (nomeCategoria == null || nomeCategoria.trim().isEmpty()) {
-            System.out.println("Erro: O nome da categoria é obrigatório.");
-            return;
+    public static Categoria cadastrarCategoria(String nome) {
+        if (nome == null || nome.isEmpty()) {
+            System.out.println("Nome obrigatório.");
+            return null;
         }
-        CategoriaDAO dao = new CategoriaDAO();
-        dao.cadastrarCategoria(nomeCategoria);
-    }
-
-    public static void editarCategoria(String id, String novoNome) {
-        if (novoNome == null || novoNome.trim().isEmpty()) {
-            System.out.println("Erro: O nome da categoria é obrigatório.");
-            return;
-        }
-        CategoriaDAO dao = new CategoriaDAO();
-        dao.editarCategoria(id, novoNome);
-    }
-
-    public static void desativarCategoria(String id) {
-        CategoriaDAO dao = new CategoriaDAO();
-        dao.desativarCategoria(id);
+        Categoria nova = new Categoria(nome, true);
+        new CategoriaDAO().cadastrarCategoria(nova);
+        return nova;
     }
 
     public static List<Categoria> listarCategorias() {
-        CategoriaDAO dao = new CategoriaDAO();
-        return dao.listarCategorias();
+        return new CategoriaDAO().listarCategorias();
     }
 
-    public static Categoria buscarCategoria(String id) {
-        CategoriaDAO dao = new CategoriaDAO();
-        return dao.buscarCategoria(id);
+    public static Categoria buscarCategoria(String termo) {
+        return new CategoriaDAO().buscarCategoria(termo);
     }
 
     // --- MÉTODOS DE INSTÂNCIA ---
 
-    public void visualizarCategoria() {
-        CategoriaDAO dao = new CategoriaDAO();
-        dao.visualizarCategoria(this.idCategoria);
+    public void editarCategoria(String novoNome) {
+        if (novoNome == null || novoNome.isEmpty()) return;
+        new CategoriaDAO().editarCategoria(this.idCategoria, novoNome);
+        this.nomeCategoria = novoNome; // Atualiza localmente também
     }
 
-    // --- GETTERS E SETTERS ---
+    public boolean desativarCategoria() {
+        boolean sucesso = new CategoriaDAO().desativarCategoria(this.idCategoria);
+        if (sucesso) this.status = false;
+        return sucesso;
+    }
+
+    public void visualizarCategoria() {
+        new CategoriaDAO().visualizarCategoria(this.idCategoria);
+    }
+
+    // Getters e Setters
     public String getIdCategoria() { return idCategoria; }
     public void setIdCategoria(String idCategoria) { this.idCategoria = idCategoria; }
     public String getNomeCategoria() { return nomeCategoria; }
@@ -67,8 +61,5 @@ public class Categoria {
     public boolean isStatus() { return status; }
     public void setStatus(boolean status) { this.status = status; }
     
-    // Método auxiliar para facilitar a exibição
-    public String getStatusDescricao() {
-        return status ? "Ativo" : "Desativado";
-    }
+    public String getStatusDescricao() { return status ? "Ativa" : "Desativada"; }
 }
