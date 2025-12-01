@@ -144,11 +144,6 @@ public class TelaUsuario {
                 if (dao.excluir(usuario.getIdUsuario())) { 
                     System.out.println("Conta excluída com sucesso.");
                     System.out.println("Você será deslogado agora.");
-                    
-<<<<<<< HEAD
-                    
-=======
->>>>>>> 916f34eba2a64a181ab5e12dcff87e168076034e
                     Sessao.deslogar();
                     return true; 
                 } else {
