@@ -9,7 +9,6 @@ import java.text.ParseException;
 import model.Despesa;
 import model.Categoria;
 import model.Sessao;
-import dao.DespesaDAO;
 import dao.CategoriaDAO;
 
 public class TelaDespesa {

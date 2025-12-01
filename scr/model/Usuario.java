@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.UUID;
 import org.mindrot.jbcrypt.BCrypt;
 import dao.UsuarioDAO; // IMPORTADO DO NOVO PACOTE DAO
-import model.UtilData; // Assumindo que UtilData está em model
-import model.DatabaseConnector; // Necessário se for usado diretamente
 
 public class Usuario {
 
