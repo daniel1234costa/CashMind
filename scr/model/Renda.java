@@ -7,6 +7,7 @@ import java.util.List;
 import dao.RendaDAO;
 
 public class Renda {
+
     private String idRenda;
     private String nomeRenda;
     private double valor;
@@ -16,85 +17,54 @@ public class Renda {
 
     public Renda() {}
 
-    public Renda(String nomeRenda, double valor, Date data, boolean tipoRenda) {
+    public Renda(String idUsuario, String nomeRenda, double valor, Date data, boolean tipoRenda) {
+        this.idUsuario = idUsuario;
         this.nomeRenda = nomeRenda;
         this.valor = valor;
         this.data = data;
         this.tipoRenda = tipoRenda;
     }
 
-    // --- MÉTODOS ESTÁTICOS (Model chama DAO) ---
-
     public static Renda cadastrarRenda(String nome, double valor, Date data, boolean tipo) {
-        if (valor <= 0) {
-            System.out.println("Erro: O valor deve ser positivo.");
-            return null;
-        }
-        if (nome == null || nome.trim().isEmpty()) {
-            System.out.println("Erro: O nome é obrigatório.");
-            return null;
-        }
-        
-        // VERIFICAÇÃO DE LOGIN COM SUA CLASSE SESSAO
+
         if (!Sessao.isLogado()) {
             System.out.println("Erro: Nenhum usuário logado.");
             return null;
         }
 
-        Renda novaRenda = new Renda(nome, valor, data, tipo);
-        // Pega o ID direto da Sessão (que é String)
-        novaRenda.setIdUsuario(Sessao.getIdUsuarioLogado()); 
+        Renda nova = new Renda(
+            Sessao.getIdUsuarioLogado(), nome, valor, data, tipo);
 
-        RendaDAO dao = new RendaDAO();
-        return dao.cadastrarRenda(novaRenda);
+        return new RendaDAO().cadastrarRenda(nova);
     }
 
-  
     public static boolean excluirRenda(Renda renda) {
-        RendaDAO dao = new RendaDAO();
-        return dao.excluirRenda(renda);
+        return new RendaDAO().excluirRenda(renda);
     }
 
     public static List<Renda> listarRendasExtras() {
-        if (!Sessao.isLogado()) return new ArrayList<>(); 
-
-        RendaDAO dao = new RendaDAO();
-        // Passa o ID da Sessão
-        return dao.listarRendasExtras(Sessao.getIdUsuarioLogado());
+        return new RendaDAO().listarRendasExtras(Sessao.getIdUsuarioLogado());
     }
 
     public static List<Renda> listarRendasFixas() {
-        if (!Sessao.isLogado()) return new ArrayList<>();
-
-        RendaDAO dao = new RendaDAO();
-        return dao.listarRendasFixas(Sessao.getIdUsuarioLogado());
+        return new RendaDAO().listarRendasFixas(Sessao.getIdUsuarioLogado());
     }
 
     public static double calcularRendaTotalMensal(int mes, int ano) {
-        if (mes < 1 || mes > 12) {
-            System.out.println("Erro: Mês inválido.");
-            return 0.0;
-        }
-        if (!Sessao.isLogado()) return 0.0;
-
-        RendaDAO dao = new RendaDAO();
-        return dao.calcularRendaTotalMensal(mes, ano, Sessao.getIdUsuarioLogado());
+        return new RendaDAO().calcularRendaTotalMensal(mes, ano, Sessao.getIdUsuarioLogado());
     }
 
-    // --- MÉTODOS DE INSTÂNCIA ---
+    public static Renda buscarPorId(String id) {
+        if (!Sessao.isLogado()) return null;
+        return new RendaDAO().buscarPorId(id, Sessao.getIdUsuarioLogado());
+    }
 
     public void editarRenda(String nome, double valor) {
-        if (valor <= 0) {
-            System.out.println("Erro: O valor deve ser positivo.");
-            return;
-        }
-        RendaDAO dao = new RendaDAO();
-        dao.editarRenda(this.idRenda, nome, valor);
+        new RendaDAO().editarRenda(this.idRenda, nome, valor);
     }
 
     public void visualizarRenda() {
-        RendaDAO dao = new RendaDAO();
-        dao.visualizarRenda(this.idRenda);
+        new RendaDAO().visualizarRenda(this.idRenda);
     }
 
     // Getters e Setters
