@@ -1,22 +1,20 @@
 package model;
 
-import dao.DespesaDAO;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import dao.DespesaDAO;
 
 public class Despesa {
 
     private String idDespesa;
-    private String nomeDespesa; 
+    private String nomeDespesa;
     private double valor;
-    private Date data; 
-    private String idUsuario; 
+    private Date data;
+    private String idUsuario;
     private String idCategoria;
 
-    
-    public Despesa() {
-    }
+    public Despesa() {}
 
     public Despesa(String idUsuario, String nomeDespesa, double valor, Date data, String idCategoria) {
         this.idUsuario = idUsuario;
@@ -26,99 +24,72 @@ public class Despesa {
         this.idCategoria = idCategoria;
     }
 
-    
     public static boolean cadastrarDespesa(Despesa despesa) {
-        DespesaDAO dao = new DespesaDAO();
-        return dao.cadastrarDespesa(despesa);
+        return new DespesaDAO().cadastrarDespesa(despesa);
     }
 
     public static boolean excluirDespesa(String idDespesa) {
-        DespesaDAO dao = new DespesaDAO();
-        return dao.excluirDespesa(idDespesa);
+        return new DespesaDAO().excluirDespesa(idDespesa, Sessao.getIdUsuarioLogado());
     }
 
-    
-    public static List<Despesa> listarDespesas(String idUsuario) {
-        DespesaDAO dao = new DespesaDAO();
-        return dao.listarDespesas(idUsuario);
+    public static List<Despesa> listarDespesas() {
+        return new DespesaDAO().listarDespesas(Sessao.getIdUsuarioLogado());
     }
 
-   
-    public static List<Despesa> listarDespesasPorPeriodo(Date inicio, Date fim, String idUsuario) {
-        DespesaDAO dao = new DespesaDAO();
-        return dao.listarDespesasPorPeriodo(idUsuario, inicio, fim);
+    public static List<Despesa> listarDespesasPorPeriodo(Date inicio, Date fim) {
+        return new DespesaDAO().listarDespesasPorPeriodo(
+            Sessao.getIdUsuarioLogado(), inicio, fim
+        );
     }
-    
- 
+
+    public static double calcularDespesaTotalMensal(int mes, int ano) {
+        return new DespesaDAO().calcularDespesaTotalMensal(mes, ano, Sessao.getIdUsuarioLogado());
+    }
+
+    public static Despesa buscarDespesa(String termoBusca) {
+        return new DespesaDAO().buscarPorTermo(
+            termoBusca, Sessao.getIdUsuarioLogado()
+        );
+    }
+
     public static List<Despesa> listarDespesasPorCategoria(String idCategoria) {
-   
-        if (Sessao.getIdUsuarioLogado() == null) {
-            System.out.println("Erro: Nenhum usuário logado.");
-            return new ArrayList<>();
-        }
-        DespesaDAO dao = new DespesaDAO();
-        return dao.listarDespesasPorCategoria(Sessao.getIdUsuarioLogado(), idCategoria);
-    }
-    
- 
-    public static Despesa buscarDespesaPorId(String idDespesa) {
-        DespesaDAO dao = new DespesaDAO();
-        return dao.buscarPorId(idDespesa);
+        return new DespesaDAO().listarPorCategoria(
+            idCategoria, Sessao.getIdUsuarioLogado()
+        );
     }
 
-    
-    public static double calcularDespesaTotalMensal(int mes, int ano, String idUsuario) {
-        DespesaDAO dao = new DespesaDAO();
-        return dao.calcularDespesaTotalMensal(mes, ano, idUsuario);
-    }
-
-    
     public void editarDespesa() {
-        DespesaDAO dao = new DespesaDAO();
-        dao.editarDespesa(this);
+        new DespesaDAO().editarDespesa(this);
     }
 
+    public void visualizarDespesa() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-   
-    public String getIdDespesa() {
-          return idDespesa;
-        }
-    public void setIdDespesa(String idDespesa) {
-        this.idDespesa = idDespesa; 
-        }
+        System.out.println("\n--- Despesa ---");
+        System.out.println("ID: " + idDespesa);
+        System.out.println("Descrição: " + nomeDespesa);
+        System.out.println("Valor: R$ " + valor);
+        System.out.println("Data: " + sdf.format(data));
+        System.out.println("Categoria (ID): " + idCategoria);
+        System.out.println("Usuário (ID): " + idUsuario);
+        System.out.println("---------------------------");
+    }
 
-    public String getNomeDespesa() { 
-        return nomeDespesa;
-        }
-    public void setNomeDespesa(String nomeDespesa) { 
-        this.nomeDespesa = nomeDespesa; 
-        }
+    public String getIdDespesa() { return idDespesa; }
+    public void setIdDespesa(String idDespesa) { this.idDespesa = idDespesa; }
 
-    public double getValor() { 
-        return valor; 
-        }
-    public void setValor(double valor) { 
-        this.valor = valor; 
-        }
+    public String getNomeDespesa() { return nomeDespesa; }
+    public void setNomeDespesa(String nomeDespesa) { this.nomeDespesa = nomeDespesa; }
 
-    public Date getData() { 
-        return data; 
-        }
-    public void setData(Date data) { 
-        this.data = data;
-        }
+    public double getValor() { return valor; }
+    public void setValor(double valor) { this.valor = valor; }
 
-    public String getIdUsuario() {
-        return idUsuario; 
-        }
-    public void setIdUsuario(String idUsuario) { 
-        this.idUsuario = idUsuario; 
-        }
+    public Date getData() { return data; }
+    public void setData(Date data) { this.data = data; }
 
-    public String getIdCategoria() { 
-        return idCategoria; 
-        }
-    public void setIdCategoria(String idCategoria) { 
-        this.idCategoria = idCategoria; 
-        }
+    public String getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(String idUsuario) { this.idUsuario = idUsuario; }
+
+    public String getIdCategoria() { return idCategoria; }
+    public void setIdCategoria(String idCategoria) { this.idCategoria = idCategoria; }
 }
