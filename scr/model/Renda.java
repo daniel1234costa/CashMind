@@ -3,18 +3,18 @@ package model;
 import java.util.Date;
 import java.util.List;
 
+import dao.RendaDAO;
+
 public class Renda {
     private String idRenda;
     private String nomeRenda;
     private double valor;
     private Date data;
     private boolean tipoRenda;
-    private String idUsuario; // Necessário para o banco
+    private String idUsuario;
 
-    // Construtor Vazio
     public Renda() {}
 
-    // Construtor Cheio (Para criar nova)
     public Renda(String nomeRenda, double valor, Date data, boolean tipoRenda) {
         this.nomeRenda = nomeRenda;
         this.valor = valor;
@@ -22,18 +22,26 @@ public class Renda {
         this.tipoRenda = tipoRenda;
     }
 
-    // --- MÉTODOS ESTÁTICOS (Sublinhados no Diagrama) ---
-    // Estes métodos pertencem à CLASSE, não precisam de um objeto criado para chamar.
-
-    public static Renda cadastrarRenda(String nome, double valor, Date data, boolean tipoRenda) {
+    public static Renda cadastrarRenda(String nome, double valor, Date data, boolean tipo) {
+        if (valor <= 0) {
+            System.out.println("Erro: O valor deve ser positivo.");
+            return null;
+        }
+        if (nome == null || nome.trim().isEmpty()) {
+            System.out.println("Erro: O nome é obrigatório.");
+            return null;
+        }
+        
         RendaDAO dao = new RendaDAO();
-        // O DAO vai tratar de pegar o ID do usuário (da Sessão ou fixo)
-        return dao.cadastrarRenda(nome, valor, data, tipoRenda);
+        return dao.cadastrarRenda(nome, valor, data, tipo);
     }
 
-    public static boolean excluirRenda(Renda renda) {
+    public static boolean excluirRenda(String id) {
+        Renda temp = new Renda();
+        temp.setIdRenda(id);
+        
         RendaDAO dao = new RendaDAO();
-        return dao.excluirRenda(renda);
+        return dao.excluirRenda(temp);
     }
 
     public static List<Renda> listarRendasExtras() {
@@ -47,30 +55,29 @@ public class Renda {
     }
 
     public static double calcularRendaTotalMensal(int mes, int ano) {
+        if (mes < 1 || mes > 12) {
+            System.out.println("Erro: Mês inválido.");
+            return 0.0;
+        }
         RendaDAO dao = new RendaDAO();
         return dao.calcularRendaTotalMensal(mes, ano);
     }
 
-    // --- MÉTODOS DE INSTÂNCIA (Não sublinhados) ---
-    // Estes métodos usam os dados do próprio objeto (this).
-
-    public void editarRenda(String id, String nome, double valor) {
+    public void editarRenda(String nome, double valor) {
+        if (valor <= 0) {
+            System.out.println("Erro: O valor deve ser positivo.");
+            return;
+        }
         RendaDAO dao = new RendaDAO();
-        dao.editarRenda(id, nome, valor);
+        dao.editarRenda(this.idRenda, nome, valor);
     }
 
     public void visualizarRenda() {
         RendaDAO dao = new RendaDAO();
-        // Usa o ID deste objeto para buscar os detalhes
         dao.visualizarRenda(this.idRenda);
     }
 
-    // --- GETTERS E SETTERS ---
-    public String getIdRenda() 
-    { return idRenda;
-
-     };
-
+    public String getIdRenda() { return idRenda; }
     public void setIdRenda(String idRenda) { this.idRenda = idRenda; }
     public String getNomeRenda() { return nomeRenda; }
     public void setNomeRenda(String nomeRenda) { this.nomeRenda = nomeRenda; }
