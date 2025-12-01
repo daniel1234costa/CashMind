@@ -49,12 +49,10 @@ public class Renda {
         return dao.cadastrarRenda(novaRenda);
     }
 
+  
     public static boolean excluirRenda(Renda renda) {
         RendaDAO dao = new RendaDAO();
-        // Cria objeto temporário com ID para passar pro DAO
-        Renda r = new Renda();
-        r.setIdRenda(id);
-        return dao.excluirRenda(r);
+        return dao.excluirRenda(renda);
     }
 
     public static List<Renda> listarRendasExtras() {
