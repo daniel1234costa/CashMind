@@ -107,9 +107,9 @@ public class Main {
         
         switch (opcao) {
             case 1:
-                // Todas as telas agora recebem o Scanner
-               // TelaRenda telaRenda = new TelaRenda(); 
-              //  telaRenda.exibirMenu(); 
+           // Todas as telas agora recebem o Scanner
+                TelaRenda telaRenda = new TelaRenda(); 
+                telaRenda.exibirMenu(); 
                 break;
             
             case 2:
