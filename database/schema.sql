@@ -8,21 +8,23 @@ CREATE TABLE IF NOT EXISTS Usuario (
     data_nascimento DATE
 );
 
-
 CREATE TABLE IF NOT EXISTS Categoria (
     idCategoria VARCHAR(255) PRIMARY KEY,
     nomeCategoria VARCHAR(255) NOT NULL,
-    status BOOLEAN NOT NULL DEFAULT TRUE
+    status BOOLEAN NOT NULL DEFAULT TRUE,
+    idUsuario VARCHAR(255) NOT NULL,
+    
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
 );
 
-
 CREATE TABLE IF NOT EXISTS Renda (
-    idRenda INTEGER PRIMARY KEY AUTOINCREMENT,
-    idUsuario INTEGER NOT NULL,
-    nomeRenda VARCHAR(255) NOT NULL,
-    valor NUMERIC(10, 2) NOT NULL,
-    data TEXT NOT NULL,                       
-    tipo BOOLEAN NOT NULL,                   
+    id TEXT PRIMARY KEY,
+    idUsuario VARCHAR(255) NOT NULL,
+    nome TEXT NOT NULL,
+    valor REAL NOT NULL,
+    data TEXT NOT NULL,
+    tipo BOOLEAN NOT NULL,
+
     FOREIGN KEY (idUsuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
 );
 
@@ -33,9 +35,7 @@ CREATE TABLE IF NOT EXISTS Despesa (
     nomeDespesa VARCHAR(255) NOT NULL,
     valor NUMERIC(10, 2) NOT NULL,
     data DATE NOT NULL,
-    
-   
+
     FOREIGN KEY (idUsuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
-    
-    FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria) ON DELETE RESTRICT 
+    FOREIGN KEY (idCategoria) REFERENCES Categoria(idCategoria) ON DELETE RESTRICT
 );
