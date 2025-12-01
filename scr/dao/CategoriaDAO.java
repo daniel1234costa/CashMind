@@ -49,6 +49,12 @@ public class CategoriaDAO {
         return categorias;
     }
 
+    
+    public List<Categoria> listarCategorias() {
+        return listarTodos();
+    }
+   
+
     public Categoria buscarCategoria(String nome) {
         String sql = "SELECT * FROM Categoria WHERE nomeCategoria LIKE ?";
 
