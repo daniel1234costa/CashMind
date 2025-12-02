@@ -6,10 +6,10 @@ import java.util.Date;
 
 public class UtilData {
 
-    // Formato usado pelo usuário
+    // Formato usado pelo usuário (entrada de dados)
     private static final SimpleDateFormat FORMAT_USER = new SimpleDateFormat("dd/MM/yyyy");
 
-    // Formato usado pelo SQLite
+    // Formato usado pelo SQLite (padrão no banco de dados)
     private static final SimpleDateFormat FORMAT_DB = new SimpleDateFormat("yyyy-MM-dd");
 
     static {
@@ -17,13 +17,17 @@ public class UtilData {
         FORMAT_DB.setLenient(false);
     }
 
-    // Converte Date → String para salvar no banco (yyyy-MM-dd)
+    /**
+     * Converte java.util.Date → String para salvar no banco (yyyy-MM-dd).
+     */
     public static String formatarData(Date data) {
         if (data == null) return null;
         return FORMAT_DB.format(data);
     }
 
-    // Converte String digitada pelo usuário (dd/MM/yyyy) → Date
+    /**
+     * Converte String digitada pelo usuário (dd/MM/yyyy) → java.util.Date.
+     */
     public static Date parseDataUsuario(String dataString) {
         if (dataString == null || dataString.isEmpty()) return null;
 
@@ -35,7 +39,10 @@ public class UtilData {
         }
     }
 
-    // Converte String do banco (yyyy-MM-dd) → Date
+    /**
+     * Converte String do banco (yyyy-MM-dd) → java.util.Date.
+     * ESTE É O MÉTODO CORRETO PARA LEITURA DO BANCO DE DADOS.
+     */
     public static Date parseDataBanco(String dataString) {
         if (dataString == null || dataString.isEmpty()) return null;
 

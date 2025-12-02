@@ -11,14 +11,12 @@ import model.UtilData;
 
 public class UsuarioDAO {
 
-    
     private static final String SQL_INSERT = 
         "INSERT INTO Usuario (id_usuario, nome, email, senha, data_nascimento) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_SELECT_BY_EMAIL = 
         "SELECT id_usuario, nome, email, senha, data_nascimento FROM Usuario WHERE email = ?";
     private static final String SQL_DELETE = 
         "DELETE FROM Usuario WHERE id_usuario = ?";
-    
     
     private static final String SQL_UPDATE = 
         "UPDATE Usuario SET nome = ?, email = ?, data_nascimento = ? WHERE id_usuario = ?";
@@ -40,7 +38,7 @@ public class UsuarioDAO {
             stmt.setString(3, usuario.getEmail());
             stmt.setString(4, usuario.getSenha());
             
-            // CONVERSÃO ESSENCIAL: java.util.Date para String (SQLite)
+            // CONVERSÃO: java.util.Date para String (SQLite)
             stmt.setString(5, UtilData.formatarData(usuario.getDataNascimento())); 
 
             int linhasAfetadas = stmt.executeUpdate();
@@ -76,8 +74,8 @@ public class UsuarioDAO {
                 usuario.setEmail(rs.getString("email"));
                 usuario.setSenha(rs.getString("senha"));
                 
-                // CONVERSÃO ESSENCIAL: String (SQLite) para java.util.Date
-                usuario.setDataNascimento(UtilData.parseData(rs.getString("data_nascimento"))); 
+                // CORRIGIDO: Usando parseDataBanco para converter String (SQLite) para java.util.Date
+                usuario.setDataNascimento(UtilData.parseDataBanco(rs.getString("data_nascimento"))); 
             }
             
         } catch (SQLException e) {
@@ -160,8 +158,8 @@ public class UsuarioDAO {
                 u.setNome(rs.getString("nome"));
                 u.setEmail(rs.getString("email"));
                 u.setSenha(rs.getString("senha"));
-                // data_nascimento é TEXT no banco, converter com UtilData
-                u.setDataNascimento(model.UtilData.parseData(rs.getString("data_nascimento")));
+                // CORRIGIDO: Usando parseDataBanco para converter String (SQLite) para java.util.Date
+                u.setDataNascimento(model.UtilData.parseDataBanco(rs.getString("data_nascimento")));
                 return u;
             }
         } catch (java.sql.SQLException e) {

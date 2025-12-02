@@ -56,10 +56,21 @@ public class TelaDespesa {
         String nome = scanner.nextLine();
 
         System.out.print("Valor: ");
-        double valor = Double.parseDouble(scanner.nextLine());
+        double valor;
+        try {
+            valor = Double.parseDouble(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Valor inválido. Tente novamente.");
+            return; 
+        }
 
         System.out.print("Data (dd/MM/yyyy): ");
         Date data = UtilData.parseDataUsuario(scanner.nextLine());
+        
+        if (data == null) {
+            System.out.println("Data inválida. Tente novamente.");
+            return;
+        }
 
         List<Categoria> categorias = Categoria.listarCategorias();
 
@@ -68,32 +79,42 @@ public class TelaDespesa {
             return;
         }
 
-        System.out.println("\nCategorias disponíveis:");
-        for (Categoria c : categorias) {
-            System.out.println(c.getIdCategoria() + " - " + c.getNomeCategoria());
+        System.out.println("\n--- Categorias disponíveis ---");
+        for (int i = 0; i < categorias.size(); i++) {
+            Categoria c = categorias.get(i);
+            System.out.println("[" + i + "] " + c.getNomeCategoria() + " (ID: " + c.getIdCategoria() + ")");
         }
+        System.out.println("------------------------------");
 
-        System.out.print("Digite o ID da categoria: ");
-        String idCategoria = scanner.nextLine();
-
-        Categoria categoria = new CategoriaDAO().buscarCategoriaPorId(idCategoria);
-
-        if (categoria == null) {
-            System.out.println("Categoria inválida.");
+        System.out.print("Digite a POSIÇÃO da categoria (ex: 0, 1): ");
+        String entradaPosicao = scanner.nextLine();
+        
+        int posicao;
+        try {
+            posicao = Integer.parseInt(entradaPosicao);
+        } catch (NumberFormatException e) {
+            System.out.println("Posição inválida. Por favor, digite um número inteiro.");
             return;
         }
 
-        //BLOQUEIA categoria desativada
-        if (!categoria.getStatus()) {
+        if (posicao < 0 || posicao >= categorias.size()) {
+            System.out.println("Posição fora do intervalo. Digite um número de 0 a " + (categorias.size() - 1));
+            return;
+        }
+        
+        Categoria categoriaSelecionada = categorias.get(posicao);
+        String idCategoria = categoriaSelecionada.getIdCategoria(); 
+
+        if (!categoriaSelecionada.getStatus()) {
             System.out.println("Categoria desativada. Não é possível cadastrar despesas nela.");
             return;
         }
-
+        
         Despesa despesa = new Despesa(
             nome,
             valor,
             data,
-            categoria,
+            categoriaSelecionada,
             Sessao.getIdUsuarioLogado()
         );
 
@@ -150,7 +171,6 @@ public class TelaDespesa {
             return;
         }
 
-        //BLOQUEIA categoria desativada ao editar
         if (!categoria.getStatus()) {
             System.out.println("Categoria desativada. Não é possível mover a despesa para ela.");
             return;
