@@ -78,14 +78,14 @@ public class TelaUsuario {
     }
 
 
-    private void exibirDadosUsuarioLogado() {
-        Usuario usuario = buscarUsuarioLogado();
-        if (usuario != null) {
-            Usuario.visualizarUsuario(usuario);
-            System.out.println("Pressione ENTER para continuar...");
-            scanner.nextLine();
-        }
+   private void exibirDadosUsuarioLogado() {
+    Usuario usuario = buscarUsuarioLogado();
+    if (usuario != null) {
+        usuario.visualizarUsuario(usuario); 
+        System.out.println("Pressione ENTER para continuar...");
+        scanner.nextLine();
     }
+}
 
     private void editarPerfil() {
         Usuario usuario = buscarUsuarioLogado();
@@ -124,7 +124,7 @@ public class TelaUsuario {
 
         // Tenta salvar no banco
         if (Usuario.editarUsuario(usuario)) {
-            System.out.println("Perfil atualizado com sucesso!");
+            System.out.println("------Novos dados foram fornecidos-----");
         } else {
             System.out.println("Erro ao atualizar perfil (Email pode já estar em uso).");
         }

@@ -117,26 +117,26 @@ public class Usuario {
     }
      
 
-    public static void visualizarUsuario(Usuario usuario) { 
-        if (usuario == null) {
-            System.out.println("Erro: Usuário não informado para visualização.");
-            return;
-        }
-
-        System.out.println("\n===== SEU PERFIL =====");
-        System.out.println("ID: " + usuario.getIdUsuario());
-        System.out.println("Nome: " + usuario.getNome());
-        System.out.println("Email: " + usuario.getEmail());
-
-        if (usuario.getDataNascimento() != null) {
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
-            System.out.println("Data de Nascimento: " + sdf.format(usuario.getDataNascimento()));
-        } else {
-            System.out.println("Data de Nascimento: Não informada");
-        }
-
-        System.out.println("=======================\n");
+    public void visualizarUsuario(Usuario usuario) { 
+    if (usuario == null) {
+        System.out.println("Erro: Usuário não informado para visualização.");
+        return;
     }
+
+    System.out.println("\n===== SEU PERFIL =====");
+    System.out.println("ID: " + usuario.getIdUsuario());
+    System.out.println("Nome: " + usuario.getNome());
+    System.out.println("Email: " + usuario.getEmail());
+
+    if (usuario.getDataNascimento() != null) {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        System.out.println("Data de Nascimento: " + sdf.format(usuario.getDataNascimento()));
+    } else {
+        System.out.println("Data de Nascimento: Não informada");
+    }
+
+    System.out.println("=======================\n");
+}
 
 
     public static void excluirUsuario(String email) {
