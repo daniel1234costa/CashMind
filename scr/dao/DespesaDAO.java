@@ -186,7 +186,7 @@ public class DespesaDAO {
 
     public boolean editarDespesa(Despesa despesa) {
 
-        //Impede edição se a categoria estiver desativada
+        
         if (despesa.getCategoria() == null || !despesa.getCategoria().getStatus()) {
             System.out.println("Erro: a categoria está desativada. Não é possível editar a despesa.");
             return false;

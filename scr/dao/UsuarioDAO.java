@@ -38,7 +38,6 @@ public class UsuarioDAO {
             stmt.setString(3, usuario.getEmail());
             stmt.setString(4, usuario.getSenha());
             
-            // CONVERSÃO: java.util.Date para String (SQLite)
             stmt.setString(5, UtilData.formatarData(usuario.getDataNascimento())); 
 
             int linhasAfetadas = stmt.executeUpdate();
@@ -50,12 +49,11 @@ public class UsuarioDAO {
             
         } finally {
             DatabaseConnector.fecharConexao(conn);
-            // Fechamento seguro do stmt
             if (stmt != null) { try { stmt.close(); } catch (SQLException e) {} }
         }
     }
     
-    // --- (B) Buscar por Email (READ) ---
+
     public Usuario buscarPorEmail(String email) {
         Connection conn = DatabaseConnector.conectar();
         PreparedStatement stmt = null;
@@ -74,7 +72,7 @@ public class UsuarioDAO {
                 usuario.setEmail(rs.getString("email"));
                 usuario.setSenha(rs.getString("senha"));
                 
-                // CORRIGIDO: Usando parseDataBanco para converter String (SQLite) para java.util.Date
+                
                 usuario.setDataNascimento(UtilData.parseDataBanco(rs.getString("data_nascimento"))); 
             }
             
@@ -158,7 +156,6 @@ public class UsuarioDAO {
                 u.setNome(rs.getString("nome"));
                 u.setEmail(rs.getString("email"));
                 u.setSenha(rs.getString("senha"));
-                // CORRIGIDO: Usando parseDataBanco para converter String (SQLite) para java.util.Date
                 u.setDataNascimento(model.UtilData.parseDataBanco(rs.getString("data_nascimento")));
                 return u;
             }

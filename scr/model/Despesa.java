@@ -26,7 +26,11 @@ public class Despesa {
 
     public static boolean cadastrarDespesa(Despesa despesa) {
 
+<<<<<<< HEAD
        
+=======
+    
+>>>>>>> b6b72eb6ff4a60993e021b304f29781d52b07f05
         if (despesa.getCategoria() == null || !despesa.getCategoria().getStatus()) {
             System.out.println("Erro: a categoria está desativada. Não é possível cadastrar a despesa.");
             return false;
