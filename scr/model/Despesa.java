@@ -26,7 +26,7 @@ public class Despesa {
 
     public static boolean cadastrarDespesa(Despesa despesa) {
 
-        // ✅ Impede cadastro se a categoria estiver desativada
+    
         if (despesa.getCategoria() == null || !despesa.getCategoria().getStatus()) {
             System.out.println("Erro: a categoria está desativada. Não é possível cadastrar a despesa.");
             return false;
@@ -67,7 +67,7 @@ public class Despesa {
 
     public void editarDespesa() {
 
-        // ✅ Impede edição se a categoria estiver desativada
+        
         if (this.categoria == null || !this.categoria.getStatus()) {
             System.out.println("Erro: a categoria está desativada. Não é possível editar a despesa.");
             return;

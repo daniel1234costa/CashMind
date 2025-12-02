@@ -23,12 +23,10 @@ public class DatabaseConnector {
         try {
             conexao = DriverManager.getConnection(URL);
 
-            // Ativa foreign keys
             try (Statement stmt = conexao.createStatement()) {
                 stmt.execute("PRAGMA foreign_keys = ON;");
             }
 
-            // Cria tabelas
             criarTabelas(conexao);
 
         } catch (SQLException e) {
@@ -41,7 +39,6 @@ public class DatabaseConnector {
     private static void criarTabelas(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
 
-            // Tabela Usuario
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Usuario (
                     id_usuario VARCHAR(255) PRIMARY KEY,
@@ -52,7 +49,6 @@ public class DatabaseConnector {
                 );
             """);
 
-            //Tabela Categoria
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Categoria (
                     idCategoria VARCHAR(255) PRIMARY KEY,
@@ -63,7 +59,6 @@ public class DatabaseConnector {
                 );
             """);
 
-            //Tabela Renda
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Renda (
                     id TEXT PRIMARY KEY,
@@ -76,7 +71,6 @@ public class DatabaseConnector {
                 );
             """);
 
-            //Tabela Despesa
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS Despesa (
                     idDespesa VARCHAR(255) PRIMARY KEY,
@@ -90,7 +84,6 @@ public class DatabaseConnector {
                 );
             """);
 
-            // Usuário de teste
             stmt.execute("""
                 INSERT OR IGNORE INTO Usuario (id_usuario, nome, email, senha)
                 VALUES ('1', 'Admin', 'admin', '123');

@@ -14,10 +14,8 @@ public class Sessao {
     // Construtor privado para impedir que alguém faça "new Sessao()"
     private Sessao() {}
 
-    /**
-     * Define o usuário logado no sistema.
-     * @param idUsuario O ID do usuário que acabou de logar.
-     */
+    
+     
     public static void logar(String idUsuario) {
         idUsuarioLogado = idUsuario;
     }
