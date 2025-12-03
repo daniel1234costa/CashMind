@@ -24,7 +24,7 @@ public class TelaDespesa {
             System.out.println("5 - Visualizar Despesa");
             System.out.println("6 - Listar por Categoria");
             System.out.println("7 - Listar por Período");
-            System.out.println("8 - Buscar por Termo");
+            System.out.println("8 - Buscar Despesa");
             System.out.println("9 - Total Mensal");
             System.out.println("0 - Voltar");
             System.out.print("Escolha uma opção: ");
@@ -329,7 +329,7 @@ public class TelaDespesa {
 
     private void buscarDespesa() {
 
-        System.out.print("Digite um termo para buscar: ");
+        System.out.print("Digite um nome para buscar: ");
         String termo = leitor.nextLine();
 
         Despesa d = Despesa.buscarDespesa(termo);
