@@ -1,6 +1,5 @@
 package views;
 
-import dao.DespesaDAO;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -208,11 +207,39 @@ public class TelaDespesa {
     }
 
     private void excluirDespesa() {
+        List<Despesa> despesas = Despesa.listarDespesas();
 
-        System.out.print("Digite o ID da despesa: ");
-        String id = leitor.nextLine();
+        if (despesas.isEmpty()) {
+            System.out.println("Nenhuma despesa encontrada.");
+            return;
+        }
 
-        if (Despesa.excluirDespesa(id)) {
+        System.out.println("\n--- Despesas disponíveis ---");
+        for (int i = 0; i < despesas.size(); i++) {
+            Despesa d = despesas.get(i);
+            System.out.println("[" + i + "] " + d.getNomeDespesa() + " - R$ " + d.getValor() + " - " + UtilData.formatarData(d.getData()));
+        }
+        System.out.println("------------------------------");
+
+        System.out.print("Digite a POSIÇÃO da despesa (ex: 0, 1): ");
+        String entradaPosicao = leitor.nextLine();
+
+        int posicao;
+        try {
+            posicao = Integer.parseInt(entradaPosicao);
+        } catch (NumberFormatException e) {
+            System.out.println("Posição inválida. Por favor, digite um número inteiro.");
+            return;
+        }
+
+        if (posicao < 0 || posicao >= despesas.size()) {
+            System.out.println("Posição fora do intervalo. Digite um número de 0 a " + (despesas.size() - 1));
+            return;
+        }
+
+        Despesa despesaSelecionada = despesas.get(posicao);
+
+        if (Despesa.excluirDespesa(despesaSelecionada.getIdDespesa())) {
             System.out.println("Despesa excluída com sucesso.");
         } else {
             System.out.println("Erro ao excluir.");
