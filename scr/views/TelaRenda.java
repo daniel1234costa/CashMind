@@ -121,41 +121,121 @@ public class TelaRenda {
     }
 
     private void editar() {
-        System.out.print("ID da renda: ");
-        String id = leitor.nextLine();
+        System.out.println("\n--- EDITAR RENDA ---");
 
-        Renda renda = Renda.buscarPorId(id);
+        List<Renda> todas = Renda.listarRendasFixas();
+        todas.addAll(Renda.listarRendasExtras());
 
-        if (renda == null) {
-            System.out.println("Renda não encontrada.");
+        if (todas.isEmpty()) {
+            System.out.println("Nenhuma renda cadastrada para editar.");
             return;
         }
 
-        System.out.print("Novo nome (" + renda.getNomeRenda() + "): ");
-        String nome = leitor.nextLine();
-        if (!nome.isEmpty()) renda.setNomeRenda(nome);
+        System.out.println("Selecione qual renda deseja editar:");
+        for (int i = 0; i < todas.size(); i++) {
+            Renda r = todas.get(i);
+            System.out.println((i + 1) + ". " + r.getNomeRenda() + " (R$ " + r.getValor() + ")");
+        }
+        System.out.println("0. Cancelar");
 
-        System.out.print("Novo valor (" + renda.getValor() + "): ");
+        System.out.print("Digite o número da opção: ");
+        int opcao = -1;
+        try {
+            opcao = Integer.parseInt(leitor.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Opção inválida! Digite apenas números.");
+            return;
+        }
+
+        if (opcao == 0) return; 
+
+        if (opcao < 1 || opcao > todas.size()) {
+            System.out.println("Opção inválida.");
+            return;
+        }
+
+        Renda rendaSelecionada = todas.get(opcao - 1);
+
+        System.out.println("--- Editando: " + rendaSelecionada.getNomeRenda() + " ---");
+        System.out.println("(Deixe vazio e aperte Enter para não alterar)");
+
+        
+        System.out.print("Novo nome (" + rendaSelecionada.getNomeRenda() + "): ");
+        String novoNome = leitor.nextLine();
+        if (novoNome.isEmpty()) {
+            novoNome = rendaSelecionada.getNomeRenda();
+        }
+
+        System.out.print("Novo valor (" + rendaSelecionada.getValor() + "): ");
         String valorStr = leitor.nextLine();
-        if (!valorStr.isEmpty()) renda.setValor(Double.parseDouble(valorStr));
+        double novoValor = rendaSelecionada.getValor(); 
+        
+        if (!valorStr.isEmpty()) {
+            try {
+                double valorDigitado = Double.parseDouble(valorStr.replace(",", "."));
+                if (valorDigitado > 0) {
+                    novoValor = valorDigitado;
+                } else {
+                    System.out.println("Valor inválido (deve ser positivo). Mantendo o anterior.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: Digite apenas números. Mantendo valor anterior.");
+            }
+        }
 
-        renda.editarRenda(renda.getNomeRenda(), renda.getValor());
-        System.out.println(" Renda atualizada!");
+        rendaSelecionada.editarRenda(novoNome, novoValor);
+        
+        System.out.println("✅ Renda atualizada com sucesso!");
     }
 
     private void excluir() {
-        System.out.print("ID da renda: ");
-        String id = leitor.nextLine();
+        System.out.println("\n--- EXCLUIR RENDA ---");
 
-        Renda renda = Renda.buscarPorId(id);
+        List<Renda> todas = Renda.listarRendasFixas();
+        todas.addAll(Renda.listarRendasExtras());
 
-        if (renda == null) {
-            System.out.println("Renda não encontrada.");
+        if (todas.isEmpty()) {
+            System.out.println("Nenhuma renda cadastrada para excluir.");
             return;
         }
 
-        if (Renda.excluirRenda(renda)) System.out.println(" Renda excluída!");
-        else System.out.println(" Erro ao excluir.");
+        System.out.println("Selecione qual renda deseja excluir:");
+        for (int i = 0; i < todas.size(); i++) {
+            Renda r = todas.get(i);
+            System.out.println((i + 1) + ". " + r.getNomeRenda() + " (R$ " + r.getValor() + ")");
+        }
+        System.out.println("0. Cancelar");
+
+        System.out.print("Digite o número da opção: ");
+        int opcao = -1;
+        try {
+            opcao = Integer.parseInt(leitor.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Opção inválida! Digite apenas números.");
+            return;
+        }
+
+        if (opcao == 0) return; 
+
+        if (opcao < 1 || opcao > todas.size()) {
+            System.out.println("Opção inválida.");
+            return;
+        }
+
+        Renda rendaSelecionada = todas.get(opcao - 1); 
+
+        System.out.print("Tem certeza que deseja excluir '" + rendaSelecionada.getNomeRenda() + "'? (S/N): ");
+        String confirmacao = leitor.nextLine();
+
+        if (confirmacao.equalsIgnoreCase("S")) {
+            if (Renda.excluirRenda(rendaSelecionada)) {
+                System.out.println(" Renda excluída com sucesso!");
+            } else {
+                System.out.println(" Erro ao excluir no banco de dados.");
+            }
+        } else {
+            System.out.println("Operação cancelada.");
+        }
     }
 
     private void visualizar() {
@@ -175,7 +255,13 @@ public class TelaRenda {
         }
 
         System.out.print("Número: ");
-        int opcao = Integer.parseInt(leitor.nextLine());
+        int opcao = -1;
+        try {
+            opcao = Integer.parseInt(leitor.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Opção inválida! Digite apenas números.");
+            return;
+        }
 
         if (opcao < 1 || opcao > todas.size()) {
             System.out.println("Opção inválida.");
@@ -185,7 +271,6 @@ public class TelaRenda {
         Renda selecionada = todas.get(opcao - 1);
         selecionada.visualizarRenda();
     }
-
     private void totalMensal() {
         System.out.print("Mês: ");
         int mes = Integer.parseInt(leitor.nextLine());
