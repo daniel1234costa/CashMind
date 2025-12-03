@@ -71,20 +71,40 @@ public class TelaCategoria {
     }
 
     private void visualizarCategoria() {
-        System.out.print("Digite o ID da categoria: ");
-        String id = leitor.nextLine();
+       
+        List<Categoria> lista = Categoria.listarCategorias();
 
-        CategoriaDAO dao = new CategoriaDAO();
-        Categoria categoria = dao.buscarCategoriaPorId(id);
-
-        if (categoria == null ||
-            !categoria.getIdUsuario().equals(Sessao.getIdUsuarioLogado())) {
-
-            System.out.println("Categoria não encontrada.");
+        if (lista.isEmpty()) {
+            System.out.println("Nenhuma categoria encontrada.");
             return;
         }
+       
+        System.out.println("\n--- Escolha uma Categoria para Visualizar ---");
+        for (int i = 0; i < lista.size(); i++) {
+            Categoria c = lista.get(i);
+           
+            String status = c.getStatus() ? "Ativa" : "Inativa"; 
+            System.out.println("[" + i + "] " + c.getNomeCategoria() + " (" + status + ")");
+        }
 
-        categoria.visualizarCategoria();
+        System.out.print("Digite o NÚMERO da categoria: ");
+        String entrada = leitor.nextLine();
+
+        try {
+            int posicao = Integer.parseInt(entrada);
+
+           
+            if (posicao >= 0 && posicao < lista.size()) {
+                Categoria categoriaSelecionada = lista.get(posicao);
+                categoriaSelecionada.visualizarCategoria();
+                
+            } else {
+                System.out.println("Opção inválida! Escolha um número da lista.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: Digite apenas números inteiros.");
+        }
     }
 
     private void buscar() {
