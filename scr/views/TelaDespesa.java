@@ -1,6 +1,5 @@
 package views;
 
-import dao.CategoriaDAO;
 import dao.DespesaDAO;
 import java.util.Date;
 import java.util.List;
@@ -149,17 +148,37 @@ public class TelaDespesa {
     }
 
     private void editarDespesa() {
+        List<Despesa> despesas = Despesa.listarDespesas();
 
-        System.out.print("Digite o ID da despesa: ");
-        String id = leitor.nextLine();
-
-        DespesaDAO dao = new DespesaDAO();
-        Despesa d = dao.buscarPorId(id, Sessao.getIdUsuarioLogado());
-
-        if (d == null) {
-            System.out.println("Despesa não encontrada.");
+        if (despesas.isEmpty()) {
+            System.out.println("Nenhuma despesa encontrada.");
             return;
         }
+
+        System.out.println("\n--- Despesas disponíveis ---");
+        for (int i = 0; i < despesas.size(); i++) {
+            Despesa d = despesas.get(i);
+            System.out.println("[" + i + "] " + d.getNomeDespesa() + " - R$ " + d.getValor() + " - " + UtilData.formatarData(d.getData()));
+        }
+        System.out.println("------------------------------");
+
+        System.out.print("Digite a POSIÇÃO da despesa (ex: 0, 1): ");
+        String entradaPosicao = leitor.nextLine();
+
+        int posicao;
+        try {
+            posicao = Integer.parseInt(entradaPosicao);
+        } catch (NumberFormatException e) {
+            System.out.println("Posição inválida.");
+            return;
+        }
+
+        if (posicao < 0 || posicao >= despesas.size()) {
+            System.out.println("Posição fora do intervalo.");
+            return;
+        }
+
+        Despesa d = despesas.get(posicao);
 
         System.out.print("Novo nome: ");
         d.setNomeDespesa(leitor.nextLine());
@@ -170,22 +189,19 @@ public class TelaDespesa {
         System.out.print("Nova data (dd/MM/yyyy): ");
         d.setData(UtilData.parseDataUsuario(leitor.nextLine()));
 
-        System.out.print("Novo ID de categoria: ");
-        String idCategoria = leitor.nextLine();
-
-        Categoria categoria = new CategoriaDAO().buscarCategoriaPorId(idCategoria);
-
-        if (categoria == null) {
-            System.out.println("Categoria inválida.");
-            return;
+        List<Categoria> categorias = Categoria.listarCategorias();
+        System.out.println("\n--- Categorias disponíveis ---");
+        for (int i = 0; i < categorias.size(); i++) {
+            Categoria c = categorias.get(i);
+            System.out.println("[" + i + "] " + c.getNomeCategoria() + " (ID: " + c.getIdCategoria() + ")");
         }
+        System.out.println("------------------------------");
 
-        if (!categoria.getStatus()) {
-            System.out.println("Categoria desativada. Não é possível mover a despesa para ela.");
-            return;
-        }
+        System.out.print("Digite a POSIÇÃO da categoria (ex: 0, 1): ");
+        int posCat = Integer.parseInt(leitor.nextLine());
+        Categoria categoriaSelecionada = categorias.get(posCat);
 
-        d.setCategoria(categoria);
+        d.setCategoria(categoriaSelecionada);
 
         d.editarDespesa();
         System.out.println("Despesa atualizada!");
@@ -219,9 +235,38 @@ public class TelaDespesa {
     }
 
     private void listarPorCategoria() {
+    List<Categoria> categorias = Categoria.listarCategorias();
 
-        System.out.print("Digite o ID da categoria: ");
-        String idCategoria = leitor.nextLine();
+    if (categorias.isEmpty()) {
+        System.out.println("Você não possui categorias cadastradas.");
+        return;
+    }
+
+    System.out.println("\n--- Categorias disponíveis ---");
+        for (int i = 0; i < categorias.size(); i++) {
+            Categoria c = categorias.get(i);
+            System.out.println("[" + i + "] " + c.getNomeCategoria() + " (ID: " + c.getIdCategoria() + ")");
+        }
+        System.out.println("------------------------------");
+
+        System.out.print("Digite a POSIÇÃO da categoria (ex: 0, 1): ");
+        String entradaPosicao = leitor.nextLine();
+
+        int posicao;
+        try {
+            posicao = Integer.parseInt(entradaPosicao);
+        } catch (NumberFormatException e) {
+            System.out.println("Posição inválida. Por favor, digite um número inteiro.");
+            return;
+        }
+
+        if (posicao < 0 || posicao >= categorias.size()) {
+            System.out.println("Posição fora do intervalo. Digite um número de 0 a " + (categorias.size() - 1));
+            return;
+        }
+
+        Categoria categoriaSelecionada = categorias.get(posicao);
+        String idCategoria = categoriaSelecionada.getIdCategoria();
 
         List<Despesa> lista = Despesa.listarDespesasPorCategoria(idCategoria);
 
